@@ -15,6 +15,10 @@ Plotinus brings that power ***to every application on your system*** (that is, a
 
 Just press <kbd>Ctrl+Shift+P</kbd> and you're in business – it feels so natural you'll soon wonder how you ever lived without it.
 
+![Nautilus screencast](https://cloud.githubusercontent.com/assets/2702526/20246717/454a1a9a-a9e3-11e6-8b19-4db092348793.gif)
+
+![gedit screencast](https://cloud.githubusercontent.com/assets/2702526/20246718/5397bed6-a9e3-11e6-8023-aa9a318820e3.gif)
+
 
 ## Installation
 
