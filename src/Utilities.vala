@@ -114,15 +114,18 @@ namespace Plotinus.Utilities {
     if (button.tooltip_text != null)
       return button.tooltip_text;
 
-    // Parse a widely used GtkBuilder naming convention (name_button)
-    var name_parts = button.get_name().split("_");
-    if (name_parts.length > 1 && name_parts[name_parts.length - 1] == "button") {
-      for (var i = 0; i < name_parts.length - 1; i++) {
-        if (name_parts[i].length > 1)
-          // Capitalize word
-          name_parts[i] = name_parts[i].substring(0, 1).up() + name_parts[i].substring(1);
+    var name = button.get_name();
+    if (name != null) {
+      // Parse a widely used GtkBuilder naming convention (name_button)
+      var name_parts = name.split("_");
+      if (name_parts.length > 1 && name_parts[name_parts.length - 1] == "button") {
+        for (var i = 0; i < name_parts.length - 1; i++) {
+          if (name_parts[i].length > 1)
+            // Capitalize word
+            name_parts[i] = name_parts[i].substring(0, 1).up() + name_parts[i].substring(1);
+        }
+        return string.joinv(" ", name_parts[0:name_parts.length - 1]);
       }
-      return string.joinv(" ", name_parts[0:name_parts.length - 1]);
     }
 
     return null;
