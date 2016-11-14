@@ -9,9 +9,9 @@
 
 # A searchable command palette in every modern GTK+ application
 
-Have you used Sublime Text's or Atom's "Command Palette"? A list of everything the application can do that opens at the press of a key and finds the action you are looking for just by typing a few letters? It's raw power at your fingertips.
+Have you used Sublime Text's or Atom's "Command Palette"? It's a list of everything those editors can do that opens at the press of a key and finds the action you are looking for just by typing a few letters. It's raw power at your fingertips.
 
-Plotinus brings that power ***to every application on your system*** (that is, as long as those applications use the GTK+ 3 toolkit).
+Plotinus brings that power ***to every application on your system*** (that is, to those that use the GTK+ 3 toolkit). It automatically extracts all available commands by introspecting a running application, instantly adapting to UI changes and showing only relevant actions. Using Plotinus requires *no modifications* to the application itself!
 
 Just press <kbd>Ctrl+Shift+P</kbd> and you're in business – it feels so natural you'll soon wonder how you ever lived without it.
 
@@ -77,7 +77,7 @@ Vala is still the greatest thing ever to happen to Linux Desktop development.
 
 ## Contributing
 
-Contributors are always welcome. However, **please file an issue explaining what you intend to add before opening a pull request,** *especially* for new features! I have a clear vision of what I want (and do not want) Plotinus to be, so discussing potential additions might help you avoid duplication and wasted work.
+Contributors are always welcome. However, **please file an issue describing what you intend to add before opening a pull request,** *especially* for new features! I have a clear vision of what I want (and do not want) Plotinus to be, so discussing potential additions might help you avoid duplication and wasted work.
 
 By contributing, you agree to release your changes under the same license as the rest of the project (see below).
 
