@@ -80,6 +80,7 @@ class Plotinus.Plotinus : Object {
     scrolled_window.add(command_list);
 
     var header_bar = new Gtk.HeaderBar();
+    header_bar.spacing = 0;
     window.set_titlebar(header_bar);
 
     var search_entry = new Gtk.SearchEntry();
@@ -87,6 +88,7 @@ class Plotinus.Plotinus : Object {
     //       do not support expanding packed widgets. The fix will be in a future release
     //       (see https://bugzilla.gnome.org/show_bug.cgi?id=724332).
     search_entry.set_size_request(600, -1);
+    search_entry.margin = 4;
     header_bar.custom_title = search_entry;
 
     search_entry.changed.connect(() => {
