@@ -59,22 +59,25 @@ class Plotinus.CommandList : Gtk.TreeView {
 
     headers_visible = false;
 
-    var style_context = get_style_context();
-    var text_color = style_context.get_color(Gtk.StateFlags.NORMAL);
-    var selection_color = style_context.get_background_color(Gtk.StateFlags.SELECTED);
+    // The theme's style context is reliably available only after the widget has been realized
+    realize.connect(() => {
+      var style_context = get_style_context();
+      var text_color = style_context.get_color(Gtk.StateFlags.NORMAL);
+      var selection_color = style_context.get_background_color(Gtk.StateFlags.SELECTED | Gtk.StateFlags.FOCUSED);
 
-    text_color.alpha = 0.4;
-    append_column(new ListColumn((command) => {
-      return highlight_words(string.joinv("  \u25B6  ", command.path), filter_words) + "  ";
-    }, true, text_color));
+      text_color.alpha = 0.4;
+      append_column(new ListColumn((command) => {
+        return highlight_words(string.joinv("  \u25B6  ", command.path), filter_words) + "  ";
+      }, true, text_color));
 
-    append_column(new ListColumn((command) => {
-      return highlight_words(command.label, filter_words);
-    }, false, null, 1.4));
+      append_column(new ListColumn((command) => {
+        return highlight_words(command.label, filter_words);
+      }, false, null, 1.4));
 
-    append_column(new ListColumn((command) => {
-      return Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator)));
-    }, true, selection_color));
+      append_column(new ListColumn((command) => {
+        return Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator)));
+      }, true, selection_color));
+    });
   }
 
   public void set_filter(string filter) {
