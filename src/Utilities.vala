@@ -114,6 +114,16 @@ namespace Plotinus.Utilities {
     if (button.tooltip_text != null)
       return button.tooltip_text;
 
+    var tool_button = button.parent as Gtk.ToolButton;
+    if (tool_button != null) {
+      // Try to get label from enclosing toolbar button widget
+      if (tool_button.label != null)
+        return clean_label(tool_button.label);
+
+      if (tool_button.tooltip_text != null)
+        return tool_button.tooltip_text;
+    }
+
     var name = button.get_name();
     if (name != null) {
       // Parse a widely used GtkBuilder naming convention (name_button)
