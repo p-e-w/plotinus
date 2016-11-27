@@ -174,6 +174,10 @@ class Plotinus.CommandExtractor : Object {
             foreach (var command in get_menu_model_commands(menu_button.menu_model, submenu_path)) {
               commands += command;
             }
+          } else if (menu_button.popup != null) {
+            foreach (var command in get_menu_shell_commands(menu_button.popup, submenu_path)) {
+              commands += command;
+            }
           } else if (menu_button.popover != null) {
             // Disable strict (ancestors) visibility check so that buttons in popover can be found
             foreach (var command in get_container_commands(menu_button.popover, submenu_path, false)) {
