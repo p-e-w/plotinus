@@ -24,8 +24,9 @@ vala_precompile(VALA_C ${LIB_NAME}
   src/Command.vala
   src/CommandExtractor.vala
   src/CommandList.vala
+  src/Keybinder.vala
   src/Module.vala
-  src/Plotinus.vala
+  src/PopupWindow.vala
   src/Utilities.vala
 PACKAGES
   gtk+-3.0>=3.16

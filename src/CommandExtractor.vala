@@ -13,12 +13,17 @@ using Plotinus.Utilities;
 
 class Plotinus.CommandExtractor : Object {
 
-  private Gtk.Application application;
-  private string application_name;
+  private Gtk.Application? application;
+  private string? application_name;
 
   private Gtk.Window window;
 
-  public CommandExtractor(Gtk.Application application, string application_name) {
+  public CommandExtractor() {
+    application = null;
+    application_name = null;
+  }
+
+  public CommandExtractor.with_application(Gtk.Application application, string application_name) {
     this.application = application;
     this.application_name = application_name;
   }
@@ -28,13 +33,13 @@ class Plotinus.CommandExtractor : Object {
 
     this.window = window;
 
-    if (application.app_menu != null) {
+    if (application != null && application.app_menu != null) {
       foreach (var command in get_menu_model_commands(application.app_menu, {application_name})) {
         commands += command;
       }
     }
 
-    if (application.menubar != null) {
+    if (application != null && application.menubar != null) {
       foreach (var command in get_menu_model_commands(application.menubar, {})) {
         commands += command;
       }
@@ -68,8 +73,10 @@ class Plotinus.CommandExtractor : Object {
       var action_name = (action_value != null) ? action_value.get_string() : null;
       var action = (action_name != null) ? get_action(action_name) : null;
 
-      if (label != null && label != "" && action != null && action.enabled)
-        commands += new ActionCommand(path, label, application.get_accels_for_action(action_name), action);
+      if (label != null && label != "" && action != null && action.enabled) {
+        var accelerators = (application != null) ? application.get_accels_for_action(action_name) : new string[0];
+        commands += new ActionCommand(path, label, accelerators, action);
+      }
 
       var link_iterator = menu_model.iterate_item_links(i);
       string link;
@@ -131,6 +138,13 @@ class Plotinus.CommandExtractor : Object {
               Gtk.AccelKey accel_key;
               if (Gtk.AccelMap.lookup_entry(menu_item.accel_path, out accel_key))
                 accelerators += Gtk.accelerator_name(accel_key.accel_key, accel_key.accel_mods);
+            } else if (menu_item.get_type().name() == "GtkModelMenuItem") {
+              // ModelMenuItem is not part of GTK+'s public API, so we use GObject directly
+              // to access the "accel" property holding the accelerator
+              string? accelerator = null;
+              menu_item.get("accel", out accelerator);
+              if (accelerator != null && accelerator != "")
+                accelerators += accelerator;
             }
             commands += new MenuItemCommand(path, label, accelerators, menu_item);
           }
@@ -186,7 +200,7 @@ class Plotinus.CommandExtractor : Object {
           }
 
         } else if (label != null && label != "") {
-          var accelerators = (button.action_name != null) ?
+          var accelerators = (application != null && button.action_name != null) ?
               application.get_accels_for_action(button.action_name) : new string[0];
           commands += new ButtonCommand(path, label, accelerators, button);
         }
