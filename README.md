@@ -7,7 +7,9 @@
 – [Plotinus](https://en.wikipedia.org/wiki/Plotinus), *First Ennead*
 
 
-# A searchable command palette in every modern GTK+ application
+<h1 align="center">Plotinus</h1>
+<h3 align="center">A searchable command palette in every modern GTK+ application</h3>
+<br>
 
 Have you used Sublime Text's or Atom's "Command Palette"? It's a list of everything those editors can do that opens at the press of a key and finds the action you are looking for just by typing a few letters. It's raw power at your fingertips.
 
