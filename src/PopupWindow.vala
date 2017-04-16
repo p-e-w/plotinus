@@ -59,11 +59,15 @@ class Plotinus.PopupWindow : Gtk.Window {
     });
     command_list.row_activated.connect(() => search_entry.activate());
 
-    add_events(Gdk.EventMask.FOCUS_CHANGE_MASK);
-    focus_out_event.connect(() => {
-      destroy();
-      return true;
-    });
+    // Allow disabling of destroying on focus out by setting the environemnt variable PLOTINUS_UNFOCUSED_PREVENT_CLOSE=true
+    unowned string unfocus_prevent_close = GLib.Environment.get_variable("PLOTINUS_UNFOCUSED_PREVENT_CLOSE");
+    if (unfocus_prevent_close != "true") {
+        add_events(Gdk.EventMask.FOCUS_CHANGE_MASK);
+        focus_out_event.connect(() => {
+          destroy();
+          return true;
+        });
+    }
 
     add_events(Gdk.EventMask.KEY_PRESS_MASK);
     key_press_event.connect((event) => {
