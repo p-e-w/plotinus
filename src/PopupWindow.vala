@@ -16,9 +16,7 @@ class Plotinus.PopupWindow : Gtk.Window {
   public PopupWindow(Command[] commands) {
     skip_taskbar_hint = true;
     destroy_with_parent = true;
-
-    window_position = Gtk.WindowPosition.CENTER_ON_PARENT;
-    set_keep_above(true);
+    modal = true;
 
     // Width is determined by the width of the search entry
     set_default_size(-1, 300);
@@ -58,12 +56,6 @@ class Plotinus.PopupWindow : Gtk.Window {
       }
     });
     command_list.row_activated.connect(() => search_entry.activate());
-
-    add_events(Gdk.EventMask.FOCUS_CHANGE_MASK);
-    focus_out_event.connect(() => {
-      destroy();
-      return true;
-    });
 
     add_events(Gdk.EventMask.KEY_PRESS_MASK);
     key_press_event.connect((event) => {

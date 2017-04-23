@@ -60,10 +60,6 @@ namespace Plotinus {
           var commands = command_extractor.get_window_commands(window);
 
           if (commands.length > 0) {
-            if ((window.get_window().get_state() & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
-              // The popup cannot be shown while the parent window is in fullscreen state
-              window.unfullscreen();
-
             var popup_window = new PopupWindow(commands);
             popup_window.transient_for = window;
             popup_window.show_all();
