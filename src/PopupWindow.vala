@@ -18,7 +18,7 @@ class Plotinus.PopupWindow : Gtk.Window {
     destroy_with_parent = true;
     modal = true;
 
-    // Width is determined by the width of the search entry
+    // Width is determined by the width of the search entry/command list
     set_default_size(-1, 300);
     set_size_request(-1, 200);
 
@@ -36,10 +36,12 @@ class Plotinus.PopupWindow : Gtk.Window {
     set_titlebar(header_bar);
 
     var search_entry = new Gtk.SearchEntry();
-    // TODO: This is currently an unfortunate necessity as stable versions of GTK+
-    //       do not support expanding packed widgets. The fix will be in a future release
-    //       (see https://bugzilla.gnome.org/show_bug.cgi?id=724332).
-    search_entry.set_size_request(600, -1);
+    search_entry.hexpand = true;
+    if (Gtk.get_major_version() == 3 && Gtk.get_minor_version() < 22) {
+      // GTK+ < 3.22 does not support expanding packed widgets
+      // (see https://bugzilla.gnome.org/show_bug.cgi?id=724332)
+      search_entry.set_size_request(600, -1);
+    }
     search_entry.margin = 4;
     header_bar.custom_title = search_entry;
 
