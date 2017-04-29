@@ -18,6 +18,10 @@ class Plotinus.PopupWindow : Gtk.Window {
     destroy_with_parent = true;
     modal = true;
 
+    // Required for modal window behavior on X11 (see Gtk.Dialog)
+    window_position = Gtk.WindowPosition.CENTER_ON_PARENT;
+    type_hint = Gdk.WindowTypeHint.DIALOG;
+
     // Width is determined by the width of the search entry/command list
     set_default_size(-1, 300);
     set_size_request(-1, 200);
