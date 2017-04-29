@@ -15,12 +15,19 @@ namespace Plotinus {
 
   const uint SCAN_INTERVAL = 100;
 
-  const string[] HOTKEYS = { "<Primary><Shift>P" };
-
   // Method signature adapted from https://github.com/gnome-globalmenu/gnome-globalmenu
   [CCode(cname="gtk_module_init")]
   public void gtk_module_init([CCode(array_length_pos=0.9)] ref unowned string[] argv) {
     Gtk.init(ref argv);
+
+    // See http://stackoverflow.com/a/606057
+    var executable_path = FileUtils.read_link("/proc/%u/exe".printf(Posix.getpid()));
+
+    var instance_name = executable_path.substring(1).replace("/", ".");
+    var settings = new InstanceSettings("com.worldwidemann.plotinus", "default", instance_name);
+
+    if (!settings.get_value("enabled").get_boolean())
+      return;
 
     Timeout.add(SCAN_INTERVAL, () => {
       Keybinder? keybinder = null;
@@ -66,7 +73,7 @@ namespace Plotinus {
           }
         });
 
-        keybinder.set_keys(HOTKEYS);
+        keybinder.set_keys(settings.get_value("hotkeys").dup_strv());
 
         return false;
       }

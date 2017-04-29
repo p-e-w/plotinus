@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="com.worldwidemann.plotinus">
+
+    <key name="enabled" type="b">
+      <default>true</default>
+    </key>
+
+    <key name="hotkeys" type="as">
+      <default><![CDATA[ ["<Primary><Shift>P"] ]]></default>
+    </key>
+
+  </schema>
+</schemalist>

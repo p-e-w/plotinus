@@ -24,12 +24,18 @@ vala_precompile(VALA_C ${LIB_NAME}
   src/Command.vala
   src/CommandExtractor.vala
   src/CommandList.vala
+  src/InstanceSettings.vala
   src/Keybinder.vala
   src/Module.vala
   src/PopupWindow.vala
   src/Utilities.vala
 PACKAGES
   gtk+-3.0>=3.16
+  posix
 )
 
+include(GSettings)
+add_schema(data/com.worldwidemann.plotinus.gschema.xml)
+
 add_library(${LIB_NAME} SHARED ${VALA_C})
+install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib)

@@ -15,7 +15,7 @@ Have you used Sublime Text's or Atom's "Command Palette"? It's a list of everyth
 
 Plotinus brings that power ***to every application on your system*** (that is, to those that use the GTK+ 3 toolkit). It automatically extracts all available commands by introspecting a running application, instantly adapting to UI changes and showing only relevant actions. Using Plotinus requires *no modifications* to the application itself!
 
-Just press <kbd>Ctrl+Shift+P</kbd> and you're in business – it feels so natural you'll soon wonder how you ever lived without it.
+Just press <kbd>Ctrl+Shift+P</kbd> ([configurable](#configuration)) and you're in business – it feels so natural you'll soon wonder how you ever lived without it.
 
 ![Nautilus screencast](https://cloud.githubusercontent.com/assets/2702526/20246717/454a1a9a-a9e3-11e6-8b19-4db092348793.gif)
 
@@ -49,23 +49,54 @@ mkdir build
 cd build
 cmake ..
 make
+sudo make install
 ```
 
 ### Enabling Plotinus in applications
 
-Because of the complexity and clumsiness surrounding Linux environment variables, Plotinus does not currently install automatically. The easiest way to enable Plotinus for all applications is to add the line
+Because of the complexity and clumsiness surrounding Linux environment variables, Plotinus is currently not enabled automatically. The easiest way to enable Plotinus for all applications on the system is to add the line
 
 ```
 GTK3_MODULES=[libpath]
 ```
 
-to `/etc/environment`, where `[libpath]` is the *full, absolute* path of `libplotinus.so` as built by `make`. Alternatively, you can try individual applications with Plotinus by running them with
+to `/etc/environment`, where `[libpath]` is the *full, absolute* path of `libplotinus.so`, which can be found using the command
+
+```
+whereis -b libplotinus
+```
+
+Alternatively, you can try Plotinus with individual applications by running them with
 
 ```
 GTK3_MODULES=[libpath] application
 ```
 
 from a terminal.
+
+
+## Configuration
+
+Plotinus can be configured both globally and per application. Application settings take precedence over global settings. In the commands below, `[application]` can be either
+
+* `default`, in which case the setting is applied globally, or
+* the path of an application executable, without the leading slash and with all other slashes replaced by periods (e.g. `/usr/bin/gedit` -> `usr.bin.gedit`).
+
+Note that the relevant path is the path of the *process executable*, which is not always identical to the executable being launched. For example, all GNOME JavaScript applications run the process `/usr/bin/gjs`.
+
+### Enabling/disabling Plotinus
+
+```
+gsettings set com.worldwidemann.plotinus:/com/worldwidemann/plotinus/[application]/ enabled [true/false]
+```
+
+### Changing the keyboard shortcut
+
+```
+gsettings set com.worldwidemann.plotinus:/com/worldwidemann/plotinus/[application]/ hotkeys '[keys]'
+```
+
+`[keys]` must be an array of strings in the format expected by [`gtk_accelerator_parse`](https://developer.gnome.org/gtk3/stable/gtk3-Keyboard-Accelerators.html#gtk-accelerator-parse), e.g. `["<Primary><Shift>P", "<Primary>P"]`. Each shortcut in the array activates Plotinus.
 
 
 ## Acknowledgments
