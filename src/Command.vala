@@ -31,14 +31,16 @@ namespace Plotinus {
 
   class ActionCommand : Command {
     private Action action;
+    private Variant? parameter;
 
     public override void execute() {
-      action.activate(null);
+      action.activate(parameter);
     }
 
-    public ActionCommand(string[] path, string label, string[] accelerators, Action action) {
+    public ActionCommand(string[] path, string label, string[] accelerators, Action action, Variant? parameter) {
       base(path, label, accelerators);
       this.action = action;
+      this.parameter = parameter;
     }
   }
 

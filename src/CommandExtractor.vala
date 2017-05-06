@@ -75,7 +75,8 @@ class Plotinus.CommandExtractor : Object {
 
       if (label != null && label != "" && action != null && action.enabled) {
         var accelerators = (application != null) ? application.get_accels_for_action(action_name) : new string[0];
-        commands += new ActionCommand(path, label, accelerators, action);
+        var target = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_TARGET, null);
+        commands += new ActionCommand(path, label, accelerators, action, target);
       }
 
       var link_iterator = menu_model.iterate_item_links(i);
