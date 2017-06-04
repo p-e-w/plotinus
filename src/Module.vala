@@ -9,6 +9,8 @@
  * (https://gnu.org/licenses/gpl.html)
  */
 
+using Plotinus.Utilities;
+
 // The module shares its global namespace with the host application,
 // so all code should reside in a private namespace
 namespace Plotinus {
@@ -17,7 +19,7 @@ namespace Plotinus {
 
   // Method signature adapted from https://github.com/gnome-globalmenu/gnome-globalmenu
   [CCode(cname="gtk_module_init")]
-  public void gtk_module_init([CCode(array_length_pos=0.9)] ref unowned string[] argv) {
+  void gtk_module_init([CCode(array_length_pos=0.9)] ref unowned string[] argv) {
     Gtk.init(ref argv);
 
     // See http://stackoverflow.com/a/606057
@@ -26,7 +28,10 @@ namespace Plotinus {
     var instance_name = executable_path.substring(1).replace("/", ".");
     var settings = new InstanceSettings("com.worldwidemann.plotinus", "default", instance_name);
 
-    if (!settings.get_value("enabled").get_boolean())
+    var enabled = settings.get_value("enabled").get_boolean();
+    var dbus_enabled = settings.get_value("dbus-enabled").get_boolean();
+
+    if (!(enabled || dbus_enabled))
       return;
 
     Timeout.add(SCAN_INTERVAL, () => {
@@ -63,17 +68,35 @@ namespace Plotinus {
       }
 
       if (keybinder != null && command_extractor != null) {
-        keybinder.keys_pressed.connect((window) => {
-          var commands = command_extractor.get_window_commands(window);
+        if (enabled) {
+          keybinder.keys_pressed.connect((window) => {
+            var commands = command_extractor.get_window_commands(window);
 
-          if (commands.length > 0) {
-            var popup_window = new PopupWindow(commands);
-            popup_window.transient_for = window;
-            popup_window.show_all();
+            if (commands.length > 0) {
+              var popup_window = new PopupWindow(commands);
+              popup_window.transient_for = window;
+              popup_window.show_all();
+            }
+          });
+
+          keybinder.set_keys(settings.get_value("hotkeys").dup_strv());
+        }
+
+        if (dbus_enabled && application != null) {
+          var service_client = new ServiceClient(application, command_extractor);
+
+          foreach (var window in get_windows()) {
+            service_client.register_window(window);
           }
-        });
 
-        keybinder.set_keys(settings.get_value("hotkeys").dup_strv());
+          application.window_added.connect((window) => {
+            service_client.register_window(window);
+          });
+
+          application.window_removed.connect((window) => {
+            service_client.unregister_window(window);
+          });
+        }
 
         return false;
       }

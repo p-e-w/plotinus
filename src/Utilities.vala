@@ -157,4 +157,15 @@ namespace Plotinus.Utilities {
     return window.title;
   }
 
+  Gtk.Window[] get_windows() {
+    Gtk.Window[] windows = {};
+
+    Gtk.Window.list_toplevels().foreach((window) => {
+      if (!(window is PopupWindow) && window.type == Gtk.WindowType.TOPLEVEL && window.is_visible())
+        windows += window;
+    });
+
+    return windows;
+  }
+
 }

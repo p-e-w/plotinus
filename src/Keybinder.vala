@@ -9,6 +9,8 @@
  * (https://gnu.org/licenses/gpl.html)
  */
 
+using Plotinus.Utilities;
+
 namespace Plotinus {
 
   interface Keybinder : Object {
@@ -17,7 +19,7 @@ namespace Plotinus {
   }
 
   class ApplicationKeybinder : Object, Keybinder {
-    private static const string ACTION_NAME = "activate-plotinus";
+    private const string ACTION_NAME = "activate-plotinus";
 
     private Gtk.Application application;
 
@@ -51,13 +53,7 @@ namespace Plotinus {
       ulong[] handler_ids = {};
 
       Timeout.add(SCAN_INTERVAL, () => {
-        Gtk.Window[] windows = {};
-        Gtk.Window.list_toplevels().foreach((window) => {
-          if (!(window is PopupWindow) && window.type == Gtk.WindowType.TOPLEVEL && window.is_visible())
-            windows += window;
-        });
-
-        foreach (var window in windows) {
+        foreach (var window in get_windows()) {
           bool handler_installed = false;
           foreach (var handler_id in handler_ids) {
             if (SignalHandler.is_connected(window, handler_id)) {

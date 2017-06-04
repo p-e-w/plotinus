@@ -6,6 +6,10 @@
       <default>true</default>
     </key>
 
+    <key name="dbus-enabled" type="b">
+      <default>false</default>
+    </key>
+
     <key name="hotkeys" type="as">
       <default><![CDATA[ ["<Primary><Shift>P"] ]]></default>
     </key>

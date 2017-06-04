@@ -32,7 +32,7 @@ class Plotinus.CommandList : Gtk.TreeView {
     }
   }
 
-  private static const string COLUMN_PADDING = "  ";
+  private const string COLUMN_PADDING = "  ";
 
   private string filter = "";
   private string[] filter_words = {};

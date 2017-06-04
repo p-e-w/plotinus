@@ -9,8 +9,6 @@
  * (https://gnu.org/licenses/gpl.html)
  */
 
-using Plotinus.Utilities;
-
 class Plotinus.PopupWindow : Gtk.Window {
 
   public PopupWindow(Command[] commands) {
