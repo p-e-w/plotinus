@@ -32,6 +32,22 @@ class Plotinus.CommandList : Gtk.TreeView {
     }
   }
 
+  private class ToggleColumn : Gtk.TreeViewColumn {
+    public ToggleColumn() {
+      var cell_renderer = new Gtk.CellRendererToggle();
+
+      pack_start(cell_renderer, false);
+
+      set_cell_data_func(cell_renderer, (cell_layout, cell, tree_model, tree_iter) => {
+        var toggle = (cell as Gtk.CellRendererToggle);
+        var command = get_iter_command(tree_model, tree_iter);
+        toggle.visible = command.get_check_type() != Gtk.ButtonRole.NORMAL;
+        toggle.radio = command.get_check_type() == Gtk.ButtonRole.RADIO;
+        toggle.active = command.is_active();
+      });
+    }
+  }
+
   private const string COLUMN_PADDING = "  ";
 
   private string filter = "";
@@ -73,6 +89,8 @@ class Plotinus.CommandList : Gtk.TreeView {
                highlight_words(string.joinv("  \u25B6  ", command.path), filter_words) +
                COLUMN_PADDING;
       }, true, text_color));
+
+      append_column(new ToggleColumn());
 
       append_column(new ListColumn((command) => {
         return highlight_words(command.label, filter_words);

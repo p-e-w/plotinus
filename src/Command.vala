@@ -28,6 +28,14 @@ namespace Plotinus {
     }
 
     public abstract void execute();
+
+    public virtual bool is_active() {
+      return false;
+    }
+
+    public virtual Gtk.ButtonRole get_check_type() {
+      return Gtk.ButtonRole.NORMAL;
+    }
   }
 
   class SignalCommand : Command {
@@ -55,6 +63,26 @@ namespace Plotinus {
     public override void execute() {
       action.activate(parameter);
     }
+
+    public override bool is_active() {
+      if(parameter != null)
+        return parameter.equal(action.get_state());
+
+      if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
+        return action.get_state().get_boolean();
+
+      return false;
+    }
+
+    public override Gtk.ButtonRole get_check_type() {
+      if(parameter != null)
+        return Gtk.ButtonRole.RADIO;
+
+      if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
+        return Gtk.ButtonRole.CHECK;
+
+      return Gtk.ButtonRole.NORMAL;
+    }
   }
 
   class MenuItemCommand : Command {
@@ -68,6 +96,24 @@ namespace Plotinus {
     public override void execute() {
       menu_item.activate();
     }
+
+    public override bool is_active() {
+      if(get_check_type() != Gtk.ButtonRole.NORMAL)
+        return (menu_item as Gtk.CheckMenuItem).active;
+
+      return false;
+    }
+    public override Gtk.ButtonRole get_check_type() {
+      if(menu_item is Gtk.CheckMenuItem) {
+        var checkable = menu_item as Gtk.CheckMenuItem;
+        if((menu_item is Gtk.RadioMenuItem) || checkable.draw_as_radio)
+          return Gtk.ButtonRole.RADIO;
+
+        return Gtk.ButtonRole.CHECK;
+      }
+
+      return Gtk.ButtonRole.NORMAL;
+    }
   }
 
   class ButtonCommand : Command {
@@ -80,6 +126,23 @@ namespace Plotinus {
 
     public override void execute() {
       button.clicked();
+    }
+
+    public override bool is_active() {
+      if(get_check_type() != Gtk.ButtonRole.NORMAL)
+        return (button as Gtk.CheckButton).active;
+
+      return false;
+    }
+
+    public override Gtk.ButtonRole get_check_type() {
+      if(button is Gtk.RadioButton)
+        return Gtk.ButtonRole.RADIO;
+
+      if(button is Gtk.CheckButton)
+        return Gtk.ButtonRole.CHECK;
+
+      return Gtk.ButtonRole.NORMAL;
     }
   }
 
