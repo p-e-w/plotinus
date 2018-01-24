@@ -32,6 +32,30 @@ class Plotinus.CommandList : Gtk.TreeView {
     }
   }
 
+  private class IconColumn : Gtk.TreeViewColumn {
+    public IconColumn() {
+      var toggle_renderer = new Gtk.CellRendererToggle();
+      var pixbuf_renderer = new Gtk.CellRendererPixbuf();
+
+      pack_start(toggle_renderer, false);
+      pack_start(pixbuf_renderer, false);
+
+      set_cell_data_func(toggle_renderer, (cell_layout, cell, tree_model, tree_iter) => {
+        var toggle = (cell as Gtk.CellRendererToggle);
+        var command = get_iter_command(tree_model, tree_iter);
+        toggle.visible = command.get_check_type() != Gtk.ButtonRole.NORMAL;
+        toggle.radio = command.get_check_type() == Gtk.ButtonRole.RADIO;
+        toggle.active = command.is_active();
+      });
+
+      set_cell_data_func(pixbuf_renderer, (cell_layout, cell, tree_model, tree_iter) => {
+        var pixbuf = (cell as Gtk.CellRendererPixbuf);
+        var command = get_iter_command(tree_model, tree_iter);
+        pixbuf.visible = command.set_image(pixbuf);
+      });
+    }
+  }
+
   private const string COLUMN_PADDING = "  ";
 
   private string filter = "";
@@ -70,17 +94,17 @@ class Plotinus.CommandList : Gtk.TreeView {
       text_color.alpha = 0.4;
       append_column(new ListColumn((command) => {
         return COLUMN_PADDING +
-               highlight_words(string.joinv("  \u25B6  ", command.path), filter_words) +
-               COLUMN_PADDING;
+               highlight_words(string.joinv("  \u25B6  ", command.path), filter_words);
       }, true, text_color));
+
+      append_column(new IconColumn());
 
       append_column(new ListColumn((command) => {
         return highlight_words(command.label, filter_words);
       }, false, null, 1.4));
 
       append_column(new ListColumn((command) => {
-        return COLUMN_PADDING +
-               Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator))) +
+        return Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator))) +
                COLUMN_PADDING;
       }, true, selection_color));
     });
