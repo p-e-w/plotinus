@@ -76,7 +76,7 @@ namespace Plotinus {
     }
 
     public override Gtk.ButtonRole get_check_type() {
-      if(parameter != null)
+      if(parameter != null && action.get_state() != null)
         return Gtk.ButtonRole.RADIO;
 
       if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
