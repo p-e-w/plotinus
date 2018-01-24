@@ -65,13 +65,14 @@ namespace Plotinus {
     }
 
     public override bool is_active() {
-      if(parameter != null)
-        return parameter.equal(action.get_state());
-
-      if(action.get_state_type() != null && VariantType.BOOLEAN.equal(action.get_state_type()))
-        return action.get_state().get_boolean();
-
-      return false;
+      switch(get_check_type()) {
+        case Gtk.ButtonRole.RADIO:
+          return parameter.equal(action.get_state());
+        case Gtk.ButtonRole.CHECK:
+          return action.get_state().get_boolean();
+        default:
+          return false;
+      }
     }
 
     public override Gtk.ButtonRole get_check_type() {
