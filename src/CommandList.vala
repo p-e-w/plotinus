@@ -32,18 +32,26 @@ class Plotinus.CommandList : Gtk.TreeView {
     }
   }
 
-  private class ToggleColumn : Gtk.TreeViewColumn {
-    public ToggleColumn() {
-      var cell_renderer = new Gtk.CellRendererToggle();
+  private class IconColumn : Gtk.TreeViewColumn {
+    public IconColumn() {
+      var toggle_renderer = new Gtk.CellRendererToggle();
+      var pixbuf_renderer = new Gtk.CellRendererPixbuf();
 
-      pack_start(cell_renderer, false);
+      pack_start(toggle_renderer, false);
+      pack_start(pixbuf_renderer, false);
 
-      set_cell_data_func(cell_renderer, (cell_layout, cell, tree_model, tree_iter) => {
+      set_cell_data_func(toggle_renderer, (cell_layout, cell, tree_model, tree_iter) => {
         var toggle = (cell as Gtk.CellRendererToggle);
         var command = get_iter_command(tree_model, tree_iter);
         toggle.visible = command.get_check_type() != Gtk.ButtonRole.NORMAL;
         toggle.radio = command.get_check_type() == Gtk.ButtonRole.RADIO;
         toggle.active = command.is_active();
+      });
+
+      set_cell_data_func(pixbuf_renderer, (cell_layout, cell, tree_model, tree_iter) => {
+        var pixbuf = (cell as Gtk.CellRendererPixbuf);
+        var command = get_iter_command(tree_model, tree_iter);
+        pixbuf.visible = command.set_image(pixbuf);
       });
     }
   }
@@ -90,7 +98,7 @@ class Plotinus.CommandList : Gtk.TreeView {
                COLUMN_PADDING;
       }, true, text_color));
 
-      append_column(new ToggleColumn());
+      append_column(new IconColumn());
 
       append_column(new ListColumn((command) => {
         return highlight_words(command.label, filter_words);

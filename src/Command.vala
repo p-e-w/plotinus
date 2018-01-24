@@ -36,6 +36,11 @@ namespace Plotinus {
     public virtual Gtk.ButtonRole get_check_type() {
       return Gtk.ButtonRole.NORMAL;
     }
+
+    [DBus(visible=false)]
+    public virtual bool set_image(Gtk.CellRendererPixbuf cell) {
+      return false;
+    }
   }
 
   class SignalCommand : Command {
@@ -53,11 +58,13 @@ namespace Plotinus {
   class ActionCommand : Command {
     private Action action;
     private Variant? parameter;
+    private Variant? icon;
 
-    public ActionCommand(string[] path, string label, string[] accelerators, Action action, Variant? parameter) {
+    public ActionCommand(string[] path, string label, string[] accelerators, Action action, Variant? parameter, Variant? icon) {
       base(path, label, accelerators);
       this.action = action;
       this.parameter = parameter;
+      this.icon = icon;
     }
 
     public override void execute() {
@@ -83,6 +90,15 @@ namespace Plotinus {
         return Gtk.ButtonRole.CHECK;
 
       return Gtk.ButtonRole.NORMAL;
+    }
+
+    public override bool set_image(Gtk.CellRendererPixbuf cell) {
+      if(this.icon == null)
+        return base.set_image(cell);
+
+      var icon = Icon.deserialize(this.icon);
+      cell.gicon = icon;
+      return true;
     }
   }
 
@@ -114,6 +130,40 @@ namespace Plotinus {
       }
 
       return Gtk.ButtonRole.NORMAL;
+    }
+
+    public override bool set_image(Gtk.CellRendererPixbuf cell) {
+      if(!(menu_item is Gtk.ImageMenuItem))
+        return base.set_image(cell);
+
+      var image_menu_item = menu_item as Gtk.ImageMenuItem;
+      if(!(image_menu_item.always_show_image || Gtk.Settings.get_default().gtk_menu_images))
+        return base.set_image(cell);
+
+      var widget = image_menu_item.get_image();
+      if(!(widget is Gtk.Image))
+        return base.set_image(cell);
+
+      var image = widget as Gtk.Image;
+
+      cell.stock_size = Gtk.IconSize.MENU;
+
+      switch(image.get_storage_type()) {
+        case Gtk.ImageType.PIXBUF:
+          cell.pixbuf = image.pixbuf;
+          return true;
+        case Gtk.ImageType.ICON_NAME:
+          cell.icon_name = image.icon_name;
+          return true;
+        case Gtk.ImageType.GICON:
+          cell.gicon = image.gicon;
+          return true;
+        case Gtk.ImageType.STOCK:
+          cell.stock_id = image.stock;
+          return true;
+        default:
+          return base.set_image(cell);
+      }
     }
   }
 

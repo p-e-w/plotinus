@@ -72,11 +72,12 @@ class Plotinus.CommandExtractor : Object {
       var action_value = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_ACTION, VariantType.STRING);
       var action_name = (action_value != null) ? action_value.get_string() : null;
       var action = (action_name != null) ? get_action(action_name) : null;
+      var icon = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_ICON, null);
 
       if (label != null && label != "" && action != null && action.enabled) {
         var accelerators = (application != null) ? application.get_accels_for_action(action_name) : new string[0];
         var target = menu_model.get_item_attribute_value(i, Menu.ATTRIBUTE_TARGET, null);
-        commands += new ActionCommand(path, label, accelerators, action, target);
+        commands += new ActionCommand(path, label, accelerators, action, target, icon);
       }
 
       var link_iterator = menu_model.iterate_item_links(i);
