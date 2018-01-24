@@ -94,8 +94,7 @@ class Plotinus.CommandList : Gtk.TreeView {
       text_color.alpha = 0.4;
       append_column(new ListColumn((command) => {
         return COLUMN_PADDING +
-               highlight_words(string.joinv("  \u25B6  ", command.path), filter_words) +
-               COLUMN_PADDING;
+               highlight_words(string.joinv("  \u25B6  ", command.path), filter_words);
       }, true, text_color));
 
       append_column(new IconColumn());
@@ -105,8 +104,7 @@ class Plotinus.CommandList : Gtk.TreeView {
       }, false, null, 1.4));
 
       append_column(new ListColumn((command) => {
-        return COLUMN_PADDING +
-               Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator))) +
+        return Markup.escape_text(string.joinv(", ", map_string(command.accelerators, format_accelerator))) +
                COLUMN_PADDING;
       }, true, selection_color));
     });
