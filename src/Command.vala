@@ -41,6 +41,32 @@ namespace Plotinus {
     public virtual bool set_image(Gtk.CellRendererPixbuf cell) {
       return false;
     }
+
+    protected bool set_image_from_widget(Gtk.CellRendererPixbuf cell, Gtk.Widget? widget) {
+      if(widget == null || !(widget is Gtk.Image))
+        return false;
+
+      var image = widget as Gtk.Image;
+
+      cell.stock_size = Gtk.IconSize.MENU;
+
+      switch(image.get_storage_type()) {
+        case Gtk.ImageType.PIXBUF:
+          cell.pixbuf = image.pixbuf;
+          return true;
+        case Gtk.ImageType.ICON_NAME:
+          cell.icon_name = image.icon_name;
+          return true;
+        case Gtk.ImageType.GICON:
+          cell.gicon = image.gicon;
+          return true;
+        case Gtk.ImageType.STOCK:
+          cell.stock_id = image.stock;
+          return true;
+        default:
+          return false;
+      }
+    }
   }
 
   class SignalCommand : Command {
@@ -141,29 +167,7 @@ namespace Plotinus {
         return base.set_image(cell);
 
       var widget = image_menu_item.get_image();
-      if(!(widget is Gtk.Image))
-        return base.set_image(cell);
-
-      var image = widget as Gtk.Image;
-
-      cell.stock_size = Gtk.IconSize.MENU;
-
-      switch(image.get_storage_type()) {
-        case Gtk.ImageType.PIXBUF:
-          cell.pixbuf = image.pixbuf;
-          return true;
-        case Gtk.ImageType.ICON_NAME:
-          cell.icon_name = image.icon_name;
-          return true;
-        case Gtk.ImageType.GICON:
-          cell.gicon = image.gicon;
-          return true;
-        case Gtk.ImageType.STOCK:
-          cell.stock_id = image.stock;
-          return true;
-        default:
-          return base.set_image(cell);
-      }
+      return base.set_image_from_widget(cell, widget);
     }
   }
 
@@ -194,6 +198,10 @@ namespace Plotinus {
         return Gtk.ButtonRole.CHECK;
 
       return Gtk.ButtonRole.NORMAL;
+    }
+
+    public override bool set_image(Gtk.CellRendererPixbuf cell) {
+      return base.set_image_from_widget(cell, button.get_image());
     }
   }
 
